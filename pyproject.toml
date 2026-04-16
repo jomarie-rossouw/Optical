@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "optical_jomarie"
+version = "0.0.0"
+authors = [
+    {name = "Jo-Marie Rossouw", email="jomarierossouw@gmail.com"},
+]
+description = "A package for the analysis of PL, TDPL, and UV-Vis data"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "GPL-3.0-or-later"
+license-files = ["COPYING*"]
+
+[tool.setuptools.packages.find]
+where = ["."]
