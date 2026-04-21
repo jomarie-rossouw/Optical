@@ -1,10 +1,5 @@
-import glob
-import re
-import numpy as np
-import pandas as pd
-from natsort import natsorted
+def func(x):
+    return x+1
 
-def myfunc(text, flag=re.NOFLAG):
-    return re.match(text, flag)
-
-re_test = myfunc(r'\_S1/\ ')
+def test_answer():
+    assert func(3) == 5
