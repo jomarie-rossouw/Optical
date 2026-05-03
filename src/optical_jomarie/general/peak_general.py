@@ -12,12 +12,13 @@ def half_max_x(x, y):
     x_right = lin_interp(x, y, zero_crossings[1], half)
     fwhm = x_right - x_left
     midpoint = 0.5*(x_right + x_left)
-    print([x_left, x_right], fwhm, midpoint)
+    return [x_left, x_right], fwhm, midpoint
 
-
+def centroid(x, y):
+    return np.sum(x * y) / np.sum(y)
 
 if __name__ == '__main__':
     data = np.loadtxt('/home/jo-marie/Documents/Experimental_11032026/PL/TDPL/Glass1_S1/-190 -- 2026-Feb-16 12-17-08.csv', delimiter= ',')
     x = data[:,0]
     y = data[:,2]
-    half_max_x(x, y)
+    [half_max_x(x, y), centroid(x, y)]

@@ -1,4 +1,5 @@
 import glob
+import os
 import numpy as np
 import pandas as pd
 from scipy.signal import find_peaks
@@ -135,7 +136,36 @@ def fit_peaks(x, y, model_components, add_constant=True):
 
     return result, plot_info
 
-def plot_and_save(x, y, result, temp, save_prefix='S1', show_plot=False, plot_info=None, output_dir=None):
+def calculate_peak_centroids(x, result, component_names=None):
+    """
+    Calculate the centroid energy for fitted peak components.
+
+    Parameters:
+    - x: np.array, energy values
+    - result: lmfit ModelResult
+    - component_names: list of component names to calculate centroids for.
+      If None, all fitted components are used.
+
+    Returns:
+    - centroids: dict mapping component name to centroid energy
+    """
+    comps = result.eval_components()
+    if component_names is None:
+        component_names = list(comps.keys())
+
+    centroids = {}
+    for name in component_names:
+        if name not in comps:
+            raise ValueError(f"Component '{name}' not found in fit result components")
+        comp = comps[name]
+        total = np.sum(comp)
+        if total == 0:
+            centroids[name] = np.nan
+        else:
+            centroids[name] = float(np.sum(x * comp) / total)
+    return centroids
+
+def plot_and_save(x, y, result, temp, save_prefix='S1', show_plot=False, plot_info=None, output_dir=None, xlim=None, ylim=None):
     """
     Plot the fit results and save to file.
 
@@ -148,8 +178,9 @@ def plot_and_save(x, y, result, temp, save_prefix='S1', show_plot=False, plot_in
     - show_plot: bool, whether to show the plot
     - plot_info: list of dicts with 'name', 'label', 'color'
     - output_dir: str, directory to save files
+    - xlim: tuple or list, x-axis limits
+    - ylim: tuple or list, y-axis limits
     """
-    import os
     if output_dir is None:
         output_dir = os.getcwd()
 
@@ -158,16 +189,28 @@ def plot_and_save(x, y, result, temp, save_prefix='S1', show_plot=False, plot_in
     plt.plot(x, y, '-', color='gray', label='Data')
     plt.plot(x, result.best_fit, '--', label='Fit', color='black')
 
-    color_map = {}
-    if plot_info is not None:
-        for info in plot_info:
-            color_map[info['name']] = {'label': info.get('label', info['name']), 'color': info.get('color', None)}
+    if xlim is not None:
+        plt.xlim(xlim)
+    if ylim is not None:
+        plt.ylim(ylim)
 
-    for name, comp in comps.items():
-        entry = color_map.get(name, {})
-        label = entry.get('label', name)
-        color = entry.get('color', None)
-        plt.plot(x, comp, '--', label=label, color=color)
+    if plot_info is not None:
+        comps_items = list(comps.items())
+        if len(plot_info) == len(comps_items):
+            for (name, comp), info in zip(comps_items, plot_info):
+                label = info.get('label', name)
+                color = info.get('color', None)
+                plt.plot(x, comp, '--', label=label, color=color)
+        else:
+            color_map = {info['name']: {'label': info.get('label', info['name']), 'color': info.get('color', None)} for info in plot_info}
+            for name, comp in comps_items:
+                entry = color_map.get(name, {})
+                label = entry.get('label', name)
+                color = entry.get('color', None)
+                plt.plot(x, comp, '--', label=label, color=color)
+    else:
+        for name, comp in comps.items():
+            plt.plot(x, comp, '--', label=name)
 
     plt.xlabel("Energy (eV)")
     plt.ylabel('PL Intensity (a.u.)')
@@ -188,15 +231,16 @@ def plot_and_save(x, y, result, temp, save_prefix='S1', show_plot=False, plot_in
         f.write(tabulate(results, headers='firstrow'))
         f.write('\n---------------------------------\n')
 
-def generate_comprehensive_report(result, model_components, temp, filename):
+def generate_comprehensive_report(result, model_components, temp, filename, x=None):
     """
-    Generate a comprehensive report file containing model components, fit report, and equations.
+    Generate a comprehensive report file containing model components, fit report, centroids, and equations.
 
     Parameters:
     - result: lmfit ModelResult
     - model_components: list, input model components
     - temp: int, temperature
     - filename: str, output filename
+    - x: np.array, energy values for centroid calculation
     """
     with open(filename, 'w') as f:
         f.write(f'Comprehensive Fit Report for {temp} K\n')
@@ -213,6 +257,17 @@ def generate_comprehensive_report(result, model_components, temp, filename):
         f.write('Fit Report:\n')
         f.write('-' * 12 + '\n')
         f.write(result.fit_report())
+        f.write('\n')
+
+        # Centroids
+        f.write('Peak Centroids (emission energies):\n')
+        f.write('-' * 30 + '\n')
+        if x is not None:
+            centroids = calculate_peak_centroids(x, result)
+            for name, centroid in centroids.items():
+                f.write(f'{name}: {centroid:.6f} eV\n')
+        else:
+            f.write('Energy axis not provided; centroid calculation skipped.\n')
         f.write('\n')
 
         # Equations
@@ -253,7 +308,7 @@ def generate_comprehensive_report(result, model_components, temp, filename):
 
         f.write('\nTotal Model: ' + ' + '.join([f"{comp['type']} ({comp.get('prefix', '')[:-1]})" for comp in model_components]) + (' + Constant' if 'c' in params else '') + '\n')
 
-def analyze_tdpl(path, energy_min=2.20, energy_max=2.55, model_components=None, save_prefix='S1', show_plot=False, add_constant=True, output_dir=None):
+def analyze_tdpl(path, energy_min=2.20, energy_max=2.55, model_components=None, save_prefix='S1', show_plot=False, add_constant=True, output_dir=None, xlim=None, ylim=None):
     """
     Main function to analyze TDPL data.
 
@@ -266,6 +321,8 @@ def analyze_tdpl(path, energy_min=2.20, energy_max=2.55, model_components=None, 
     - show_plot: bool
     - add_constant: bool, add constant offset
     - output_dir: str, directory to save outputs (default: current dir)
+    - xlim: tuple or list, x-axis limits for plots
+    - ylim: tuple or list, y-axis limits for plots
     """
     import os
     if output_dir is None:
@@ -291,14 +348,58 @@ def analyze_tdpl(path, energy_min=2.20, energy_max=2.55, model_components=None, 
 
         result, plot_info = fit_peaks(x, y, model_components, add_constant)
         report_fit(result)
-        plot_and_save(x, y, result, temp[i], save_prefix, show_plot, plot_info, output_dir)
-        generate_comprehensive_report(result, model_components, temp[i], os.path.join(output_dir, f'{save_prefix}_{temp[i]}_comprehensive_report.txt'))
+        plot_and_save(x, y, result, temp[i], save_prefix, show_plot, plot_info, output_dir, xlim=xlim, ylim=ylim)
+        generate_comprehensive_report(result, model_components, temp[i], os.path.join(output_dir, f'{save_prefix}_{temp[i]}_comprehensive_report.txt'), x)
+
+def analyze_multiple_datasets(dataset_paths, energy_min=2.20, energy_max=2.55, model_components=None, save_prefix='S1', show_plot=False, add_constant=True, base_output_dir=None, xlim=None, ylim=None):
+    """
+    Run TDPL analysis for multiple dataset directories.
+
+    Parameters:
+    - dataset_paths: list of str
+    - energy_min: float
+    - energy_max: float
+    - model_components: list of dicts
+    - save_prefix: str
+    - show_plot: bool
+    - add_constant: bool
+    - base_output_dir: str, directory where all dataset output subfolders will be created
+    - xlim: tuple or list, x-axis limits for plots
+    - ylim: tuple or list, y-axis limits for plots
+
+    Returns:
+    - list of output directories created
+    """
+    output_dirs = []
+    for path in dataset_paths:
+        dataset_name = os.path.basename(os.path.normpath(path)) or 'dataset'
+        if base_output_dir is None:
+            dataset_output_dir = os.path.join(os.getcwd(), f'{dataset_name}_{save_prefix}')
+        else:
+            dataset_output_dir = os.path.join(base_output_dir, f'{dataset_name}_{save_prefix}')
+        if not os.path.exists(dataset_output_dir):
+            os.makedirs(dataset_output_dir, exist_ok=True)
+
+        analyze_tdpl(
+            path=path,
+            energy_min=energy_min,
+            energy_max=energy_max,
+            model_components=model_components,
+            save_prefix=f'{dataset_name}_{save_prefix}',
+            show_plot=show_plot,
+            add_constant=add_constant,
+            output_dir=dataset_output_dir,
+            xlim=xlim,
+            ylim=ylim
+        )
+        output_dirs.append(dataset_output_dir)
+
+    return output_dirs
+
 #------------------------------------------------------------------------------------------------------------------------------
 
 
- 
 if __name__ == "__main__":
     path = "/home/jo-marie/Documents/faafo/PL/TDPL/Glass1_S1/"
-
-    analyze_tdpl(path)
+    analyze_tdpl(path, xlim=(2.20, 2.55), output_dir="/home/jo-marie/Documents/faafo/PL/TDPL/Glass1_S1/fit_results/")
 

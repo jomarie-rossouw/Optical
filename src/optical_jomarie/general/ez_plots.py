@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+def section(data, ref_col, use_col, lb, ub):
+    nm = data[:,ref_col]
+    idx = np.where((nm > lb) & (nm < ub))
+    return(data[idx,use_col].transpose())
+
 def plot_scatter(data, xlabel, ylabel, title):
     x_data = data[:,0]
     y_data = data[:,1]
