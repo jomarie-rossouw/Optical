@@ -1,16 +1,14 @@
 import glob
 import os
+import re
+import math
 import numpy as np
 import pandas as pd
-from scipy.signal import find_peaks
-import re
 import matplotlib.pyplot as plt
 from natsort import natsorted
-from lmfit import Parameters, Minimizer, minimize, report_fit
+from lmfit import Parameters, report_fit
 from lmfit.models import LorentzianModel, GaussianModel, ConstantModel, ExpressionModel
-from lmfit.model import save_modelresult, save_model, load_model, load_modelresult
 from tabulate import tabulate
-import math
 
 def load_tdpl_data(path, filename_pattern=r"\_S1/(.*?)\ ", temp_offset=273):
     """
@@ -84,56 +82,46 @@ def fit_peaks(x, y, model_components, add_constant=True):
     - result: lmfit ModelResult
     - plot_info: list of dicts with name, label, and color for each component
     """
-    model = None
+    model = ConstantModel() if add_constant else None
     params = Parameters()
     plot_info = []
 
     if add_constant:
-        const_model = ConstantModel()
-        model = const_model
-        params.update(const_model.make_params())
+        params.update(model.make_params())
         plot_info.append({'name': 'c', 'label': 'Constant', 'color': 'black'})
+
+    model_map = {
+        'gaussian': GaussianModel,
+        'lorentzian': LorentzianModel,
+        'expression': lambda prefix='': ExpressionModel(prefix)
+    }
 
     for comp in model_components:
         comp_type = comp['type']
+        if comp_type not in model_map:
+            raise ValueError(f"Unsupported model type: {comp_type}")
+
         prefix = comp.get('prefix', '')
         label = comp.get('label', prefix.rstrip('_'))
         color = comp.get('color', None)
 
-        if comp_type == 'gaussian':
-            m = GaussianModel(prefix=prefix)
-        elif comp_type == 'lorentzian':
-            m = LorentzianModel(prefix=prefix)
-        elif comp_type == 'expression':
-            expr = comp.get('expr', '')
-            m = ExpressionModel(expr)
-        else:
-            raise ValueError(f"Unsupported model type: {comp_type}")
+        m = GaussianModel(prefix=prefix) if comp_type == 'gaussian' else \
+            LorentzianModel(prefix=prefix) if comp_type == 'lorentzian' else \
+            ExpressionModel(comp.get('expr', ''))
 
         p = m.make_params()
-        comp_params = comp.get('params', {})
-        for key, val in comp_params.items():
+        for key, val in comp.get('params', {}).items():
             if key in p:
                 p[key].set(**val if isinstance(val, dict) else {'value': val})
 
-        if model is None:
-            model = m
-        else:
-            model += m
-
+        model = m if model is None else model + m
         params.update(p)
         plot_info.append({'name': m.name, 'label': label, 'color': color})
 
     if model is None:
         raise ValueError("No model components specified")
 
-    def objective(params, x, data):
-        resid = data - model.eval(params=params, x=x)
-        return resid.flatten()
-
-    out = minimize(objective, params=params, args=(x, y))
-    result = model.fit(data=y, params=out.params, x=x)
-
+    result = model.fit(data=y, params=params, x=x)
     return result, plot_info
 
 def calculate_peak_centroids(x, result, component_names=None):
@@ -181,40 +169,27 @@ def plot_and_save(x, y, result, temp, save_prefix='S1', show_plot=False, plot_in
     - xlim: tuple or list, x-axis limits
     - ylim: tuple or list, y-axis limits
     """
-    if output_dir is None:
-        output_dir = os.getcwd()
-
+    output_dir = output_dir or os.getcwd()
     comps = result.eval_components()
+    color_map = {info['name']: info for info in (plot_info or [])}
+
     plt.figure()
     plt.plot(x, y, '-', color='gray', label='Data')
     plt.plot(x, result.best_fit, '--', label='Fit', color='black')
 
-    if xlim is not None:
-        plt.xlim(xlim)
-    if ylim is not None:
-        plt.ylim(ylim)
-
-    if plot_info is not None:
-        comps_items = list(comps.items())
-        if len(plot_info) == len(comps_items):
-            for (name, comp), info in zip(comps_items, plot_info):
-                label = info.get('label', name)
-                color = info.get('color', None)
-                plt.plot(x, comp, '--', label=label, color=color)
-        else:
-            color_map = {info['name']: {'label': info.get('label', info['name']), 'color': info.get('color', None)} for info in plot_info}
-            for name, comp in comps_items:
-                entry = color_map.get(name, {})
-                label = entry.get('label', name)
-                color = entry.get('color', None)
-                plt.plot(x, comp, '--', label=label, color=color)
-    else:
-        for name, comp in comps.items():
-            plt.plot(x, comp, '--', label=name)
+    for name, comp in comps.items():
+        info = color_map.get(name, {})
+        label = info.get('label', name)
+        color = info.get('color', None)
+        plt.plot(x, comp, '--', label=label, color=color)
 
     plt.xlabel("Energy (eV)")
     plt.ylabel('PL Intensity (a.u.)')
     plt.title(f'{temp} K')
+    if xlim:
+        plt.xlim(xlim)
+    if ylim:
+        plt.ylim(ylim)
     plt.legend()
     plt.savefig(os.path.join(output_dir, f'{save_prefix}_{temp}K.png'))
     if show_plot:
@@ -223,13 +198,14 @@ def plot_and_save(x, y, result, temp, save_prefix='S1', show_plot=False, plot_in
 
     # Save report
     results = [['Parameter', 'Value']]
+    for name, param in result.params.items():
+        results.append([name, f'{param.value:.5f}'])
+    
     with open(os.path.join(output_dir, f'{save_prefix}_{temp}_report.txt'), 'w') as f:
         f.write(f'{temp} K.\n')
-        f.write('---------------------------------\n')
-        for name, param in result.params.items():
-            results.append([f'{name}', f'{param.value:.5f}'])
+        f.write('-' * 33 + '\n')
         f.write(tabulate(results, headers='firstrow'))
-        f.write('\n---------------------------------\n')
+        f.write('\n' + '-' * 33 + '\n')
 
 def generate_comprehensive_report(result, model_components, temp, filename, x=None):
     """
@@ -242,71 +218,58 @@ def generate_comprehensive_report(result, model_components, temp, filename, x=No
     - filename: str, output filename
     - x: np.array, energy values for centroid calculation
     """
+    params = result.params
+    eq_map = {
+        'gaussian': lambda p, c, s: f'{p:.5f} * exp(- (x - {c:.5f})^2 / (2 * {s:.5f}^2))',
+        'lorentzian': lambda p, c, s: f'{p:.5f} * ({s:.5f}^2 / ((x - {c:.5f})^2 + {s:.5f}^2)) / ({math.pi:.5f} * {s:.5f})'
+    }
+
     with open(filename, 'w') as f:
         f.write(f'Comprehensive Fit Report for {temp} K\n')
         f.write('=' * 50 + '\n\n')
 
-        # Model Components
         f.write('Model Components:\n')
         f.write('-' * 17 + '\n')
-        for i, comp in enumerate(model_components):
-            f.write(f'Component {i+1}: {comp}\n')
+        for i, comp in enumerate(model_components, 1):
+            f.write(f'Component {i}: {comp}\n')
         f.write('\n')
 
-        # Fit report
         f.write('Fit Report:\n')
         f.write('-' * 12 + '\n')
         f.write(result.fit_report())
         f.write('\n')
 
-        # Centroids
         f.write('Peak Centroids (emission energies):\n')
         f.write('-' * 30 + '\n')
         if x is not None:
-            centroids = calculate_peak_centroids(x, result)
-            for name, centroid in centroids.items():
+            for name, centroid in calculate_peak_centroids(x, result).items():
                 f.write(f'{name}: {centroid:.6f} eV\n')
         else:
             f.write('Energy axis not provided; centroid calculation skipped.\n')
         f.write('\n')
 
-        # Equations
         f.write('Fitted Equations:\n')
         f.write('-' * 17 + '\n')
-        params = result.params
-
         for comp in model_components:
             prefix = comp.get('prefix', '')
             comp_type = comp['type']
-            if comp_type == 'gaussian':
-                amp_key = f'{prefix}amplitude'
-                cen_key = f'{prefix}center'
-                sig_key = f'{prefix}sigma'
-                if amp_key in params and cen_key in params and sig_key in params:
-                    amp = params[amp_key].value
-                    cen = params[cen_key].value
-                    sig = params[sig_key].value
-                    f.write(f'Gaussian ({prefix[:-1]}): f(x) = {amp:.5f} * exp(- (x - {cen:.5f})^2 / (2 * {sig:.5f}^2))\n')
-            elif comp_type == 'lorentzian':
-                amp_key = f'{prefix}amplitude'
-                cen_key = f'{prefix}center'
-                sig_key = f'{prefix}sigma'
-                if amp_key in params and cen_key in params and sig_key in params:
-                    amp = params[amp_key].value
-                    cen = params[cen_key].value
-                    sig = params[sig_key].value
-                    f.write(f'Lorentzian ({prefix[:-1]}): f(x) = {amp:.5f} * ({sig:.5f}^2 / ((x - {cen:.5f})^2 + {sig:.5f}^2)) / ({math.pi:.5f} * {sig:.5f})\n')
+            
+            if comp_type in ('gaussian', 'lorentzian'):
+                keys = [f'{prefix}amplitude', f'{prefix}center', f'{prefix}sigma']
+                if all(k in params for k in keys):
+                    amp, cen, sig = [params[k].value for k in keys]
+                    eq = eq_map[comp_type](amp, cen, sig)
+                    f.write(f'{comp_type.title()} ({prefix[:-1]}): f(x) = {eq}\n')
             elif comp_type == 'expression':
-                expr = comp.get('expr', '')
-                f.write(f'Expression ({prefix[:-1]}): f(x) = {expr}\n')
-                # Note: parameters are fitted, but expression is symbolic
+                f.write(f'Expression ({prefix[:-1]}): f(x) = {comp.get("expr", "")}\n')
 
-        # Constant
         if 'c' in params:
-            c = params['c'].value
-            f.write(f'Constant: f(x) = {c:.5f}\n')
+            f.write(f'Constant: f(x) = {params["c"].value:.5f}\n')
 
-        f.write('\nTotal Model: ' + ' + '.join([f"{comp['type']} ({comp.get('prefix', '')[:-1]})" for comp in model_components]) + (' + Constant' if 'c' in params else '') + '\n')
+        model_str = ' + '.join(f"{c['type']} ({c.get('prefix', '')[:-1]})" for c in model_components)
+        if 'c' in params:
+            model_str += ' + Constant'
+        f.write(f'\nTotal Model: {model_str}\n')
 
 def analyze_tdpl(path, energy_min=2.20, energy_max=2.55, model_components=None, save_prefix='S1', show_plot=False, add_constant=True, output_dir=None, xlim=None, ylim=None):
     """
@@ -324,32 +287,27 @@ def analyze_tdpl(path, energy_min=2.20, energy_max=2.55, model_components=None, 
     - xlim: tuple or list, x-axis limits for plots
     - ylim: tuple or list, y-axis limits for plots
     """
-    import os
-    if output_dir is None:
-        output_dir = os.getcwd()
-    else:
-        os.makedirs(output_dir, exist_ok=True)
+    output_dir = output_dir or os.getcwd()
+    os.makedirs(output_dir, exist_ok=True)
 
     if model_components is None:
-        # Default model: Gaussian + 2 Lorentzians
         model_components = [
             {'type': 'gaussian', 'prefix': 'g1_', 'params': {'center': {'value': 2.33, 'min': energy_min, 'max': energy_max}, 'amplitude': {'value': 1.11, 'min': 0}}},
             {'type': 'lorentzian', 'prefix': 'l1_', 'params': {'center': {'value': 2.364, 'min': energy_min, 'max': energy_max}, 'amplitude': {'value': 1.657, 'min': 0}}},
             {'type': 'lorentzian', 'prefix': 'l2_', 'params': {'center': {'value': 2.38, 'min': energy_min, 'max': energy_max}, 'amplitude': {'value': 1.2, 'min': 0}}}
         ]
 
-    all_dfs, temp, nm, eV = load_tdpl_data(path)
+    all_dfs, temp, _, _ = load_tdpl_data(path)
     df_sectioned = process_data(all_dfs, energy_min, energy_max)
+    x = df_sectioned.index.to_numpy()
     data = df_sectioned.to_numpy()
 
-    for i in range(len(temp)):
+    for i, t in enumerate(temp):
         y = data[:, i]
-        x = df_sectioned.index.to_series().to_numpy()
-
         result, plot_info = fit_peaks(x, y, model_components, add_constant)
         report_fit(result)
-        plot_and_save(x, y, result, temp[i], save_prefix, show_plot, plot_info, output_dir, xlim=xlim, ylim=ylim)
-        generate_comprehensive_report(result, model_components, temp[i], os.path.join(output_dir, f'{save_prefix}_{temp[i]}_comprehensive_report.txt'), x)
+        plot_and_save(x, y, result, t, save_prefix, show_plot, plot_info, output_dir, xlim, ylim)
+        generate_comprehensive_report(result, model_components, t, os.path.join(output_dir, f'{save_prefix}_{t}_comprehensive_report.txt'), x)
 
 def analyze_multiple_datasets(dataset_paths, energy_min=2.20, energy_max=2.55, model_components=None, save_prefix='S1', show_plot=False, add_constant=True, base_output_dir=None, xlim=None, ylim=None):
     """
@@ -371,26 +329,17 @@ def analyze_multiple_datasets(dataset_paths, energy_min=2.20, energy_max=2.55, m
     - list of output directories created
     """
     output_dirs = []
+    base_output_dir = base_output_dir or os.getcwd()
+    
     for path in dataset_paths:
         dataset_name = os.path.basename(os.path.normpath(path)) or 'dataset'
-        if base_output_dir is None:
-            dataset_output_dir = os.path.join(os.getcwd(), f'{dataset_name}_{save_prefix}')
-        else:
-            dataset_output_dir = os.path.join(base_output_dir, f'{dataset_name}_{save_prefix}')
-        if not os.path.exists(dataset_output_dir):
-            os.makedirs(dataset_output_dir, exist_ok=True)
+        dataset_output_dir = os.path.join(base_output_dir, f'{dataset_name}_{save_prefix}')
+        os.makedirs(dataset_output_dir, exist_ok=True)
 
         analyze_tdpl(
-            path=path,
-            energy_min=energy_min,
-            energy_max=energy_max,
-            model_components=model_components,
-            save_prefix=f'{dataset_name}_{save_prefix}',
-            show_plot=show_plot,
-            add_constant=add_constant,
-            output_dir=dataset_output_dir,
-            xlim=xlim,
-            ylim=ylim
+            path, energy_min, energy_max, model_components,
+            f'{dataset_name}_{save_prefix}', show_plot, add_constant,
+            dataset_output_dir, xlim, ylim
         )
         output_dirs.append(dataset_output_dir)
 

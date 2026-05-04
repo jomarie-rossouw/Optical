@@ -39,12 +39,10 @@ for i in range(23):
     y = data[:,i].transpose() #intensities of each temp in own col (23, 135)
     x = df_sectioned.index.to_series().to_numpy() 
     [min, max], fwhm, energy = pg.half_max_x(x, y)
-    centroid1.append(pg.centroid(x, y))
     #min, fwhm, energy = pg.half_max_x(x, y)
     centroid2.append(energy)
 
 print(energy)
-plt.scatter(temp, centroid1, label = 'Centroid1')
 plt.scatter(temp, centroid2, label = 'Centroid2')
 plt.xlabel('Temperature (K)')
 plt.ylabel('Energy (eV)')
