@@ -40,6 +40,8 @@ out1 = min1.leastsq()
 fit1 = arrhenius(out1.params, T)
 
 #plt.plot(T, E, 'b-', label = 'S1 Energy')
-plt.plot(T, fit1, 'r-')
+plt.scatter(T, E, color = '#1f77b4')
+plt.ylabel('Energy (eV)')
+plt.xlabel('Temperature (K)')
 plt.show()
 

@@ -31,20 +31,15 @@ df_sectioned = all_dfs[all_dfs.index.to_series().between(2,3)]
 data = df_sectioned.to_numpy()
 temp = natsorted(temp)
 # synthetic data: Nx2 array
-centroid1 = []
-centroid2 = []
-
 
 for i in range(23):
     y = data[:,i].transpose() #intensities of each temp in own col (23, 135)
     x = df_sectioned.index.to_series().to_numpy() 
-    [min, max], fwhm, energy = pg.half_max_x(x, y)
-    #min, fwhm, energy = pg.half_max_x(x, y)
-    centroid2.append(energy)
-
-print(energy)
-plt.scatter(temp, centroid2, label = 'Centroid2')
-plt.xlabel('Temperature (K)')
-plt.ylabel('Energy (eV)')
+    
+plt.plot(x, y)
+#print(energy)
+#plt.scatter(temp, centroid2, label = 'Centroid2')
+plt.xlabel('Energy (eV)')
+plt.ylabel('Intensity (eV)')
 plt.legend()
 plt.show()
