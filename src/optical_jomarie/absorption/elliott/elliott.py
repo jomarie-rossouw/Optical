@@ -5,7 +5,7 @@ from scipy import special
 from scipy.special import gamma as euler_L
 import math 
 
-
+'''gebasseer op die example: https://lmfit.github.io/lmfit-py/examples/example_sympy.html#sphx-glr-examples-example-sympy-py'''
 ''' vat as input die range waaroor jy die meetings geneem het, Ry, alpha, a, b, en n'''
 def En(Eg, Ry, n, alpha): 
     '''discrete eigenenergies for boundstates'''

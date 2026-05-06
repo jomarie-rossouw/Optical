@@ -1,19 +1,57 @@
 import os
+import json
+import platform
+import sys
 from datetime import datetime
+from pathlib import Path
 
-def save_comments(out_dir, data_name, data_path):
-    # Create timestamped output directory
-    output_dir = out_dir or os.getcwd()
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_dir = f"analysis_results/{dataset_name}_{timestamp}"
-    
+import matplotlib.pyplot as plt
+import numpy as np
 
-    with open(os.path.join(output_dir, f'{save_prefix}_{temp}_report.txt'), 'w') as f:
-        f.write(f'{temp} K.\n')
-        f.write('-' * 33 + '\n')
-        f.write(tabulate(results, headers='firstrow'))
-        f.write('\n' + '-' * 33 + '\n')
+def save_fit_results(output_root, T, I, res, fitted_eq, param_values, extra_metadata=None):
+    output_dir = Path(output_root) / datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Output directory: {output_dir}")
-    print(f"Analysis complete. Results saved to: {output_dir}")
+    np.savetxt(output_dir / 'data.csv',
+               np.column_stack((T, I)),
+               delimiter=',',
+               header='T,I',
+               comments='')
+
+    with open(output_dir / 'fit_report.txt', 'w') as f:
+        f.write(res.fit_report())
+
+    with open(output_dir / 'fitted_equation.txt', 'w') as f:
+        f.write(str(fitted_eq))
+
+    initial_params = {
+        k: float(v) if np.isscalar(v) else np.asarray(v).tolist()
+        for k, v in param_values.items()
+        if k != 'T'
+    }
+    with open(output_dir / 'initial_parameters.json', 'w') as f:
+        json.dump(initial_params, f, indent=2)
+
+    with open(output_dir / 'best_parameters.json', 'w') as f:
+        json.dump(res.params.valuesdict(), f, indent=2)
+
+    repro_info = {
+        'script': str(Path(__file__).resolve()),
+        'date': datetime.now().isoformat(),
+        'python_version': sys.version,
+        'platform': platform.platform(),
+        'numpy_version': np.__version__,
+        'matplotlib_version': plt.__version__,
+    }
+    if extra_metadata:
+        repro_info.update(extra_metadata)
+
+    with open(output_dir / 'reproduction_info.json', 'w') as f:
+        json.dump(repro_info, f, indent=2)
+
+    fig = plt.figure()
+    res.plot_fit(fig=fig)
+    fig.savefig(output_dir / 'fit_plot.png', dpi=300)
+    plt.close(fig)
+
     return output_dir
