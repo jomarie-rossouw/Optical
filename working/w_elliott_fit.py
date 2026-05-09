@@ -24,7 +24,7 @@ transmish = section(data,0,2,400,689) #smoothed intensity
 absorbs = -np.log10(transmish)
 
 original_params = dict(eV=eV, a = 0.058, b = 1.79, n = 1, alpha = 2.75, Eg = 2.51, Ry = 0.089)
-En = ab.En(2.7, 0.089, 1, 2.75)
+
 elliott_mod = ab.elliott(eV=eV, a = 0.058, b = 1.79, n = 1, alpha = 2.75, Eg = 2.5, Ry = 0.089)
 #result1 = elliott_mod.fit(absorbs, eV=eV, a = 0.058, b = 1.79, n = 1, alpha = 2.75, Eg = 2.0, Ry = 0.089)
  #result2 = elliott_mod.fit(absorbs, eV=eV, a = 0.058, b = 1.79, n = 1, alpha = 2.75, Eg = 2.51, Ry = 0.089)

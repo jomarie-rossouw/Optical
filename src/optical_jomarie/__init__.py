@@ -7,3 +7,5 @@ try:
     __version__ = _version("optical_jomarie")
 except Exception:
     __version__ = "0.0.0"
+
+from . import absorption, general, PL

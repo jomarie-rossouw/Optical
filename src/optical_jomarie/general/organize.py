@@ -8,14 +8,14 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-def save_fit_results(output_root, T, I, res, fitted_eq, param_values, extra_metadata=None):
+def save_fit(output_root, x, y, x_name, y_name, res, fitted_eq, param_values, extra_metadata=None):
     output_dir = Path(output_root) / datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     np.savetxt(output_dir / 'data.csv',
-               np.column_stack((T, I)),
+               np.column_stack((x, y)),
                delimiter=',',
-               header='T,I',
+               header=f'{x_name}, {y_name}',
                comments='')
 
     with open(output_dir / 'fit_report.txt', 'w') as f:
@@ -27,7 +27,7 @@ def save_fit_results(output_root, T, I, res, fitted_eq, param_values, extra_meta
     initial_params = {
         k: float(v) if np.isscalar(v) else np.asarray(v).tolist()
         for k, v in param_values.items()
-        if k != 'T'
+        if k != x
     }
     with open(output_dir / 'initial_parameters.json', 'w') as f:
         json.dump(initial_params, f, indent=2)
