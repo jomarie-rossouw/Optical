@@ -1,0 +1,21 @@
+11/05/2026
+
+EK gaan nie nou FWHM recalculate nie, vir die intensities, deel net current waardes met 500.
+Redo S2 plots in oranje, plot data is 'S2_area_2-3_eV.txt' en 'S2_integrated_intensity.txt'
+save onder figures as 'S2_integ_int_2_3_eV.png' en 'S2_integ_int_2-20_2-55_eV.png'
+
+Note: s*_centroids_fitted.txt se height is die half max en nie die max nie so deel met 250.
+
+PL Peak Energy ylim = 2.350 to 2.365
+Max_intensity= 0 to 45
+FWHM = 0.025 to 0.060
+
+Optional for Later: plot almal op een fig as subplots
+
+Save die figures in die Analysis archive, asook onder Thesis_Writeup/Results/PL_verwerkde_data_figures, en onder /Thesis_Writeup/Results_Chapter/Optical_Plots/PL_Tidy/
+Skyf al die ander werk wat in Results folder was na n subfolder callled 'Optical_Results_Prelimenary'
+
+Eb for S1 is around 330 meV, which is much larger than the 116 meV reported by arendse, and than that of S2, which was 67 meV, in agreement with 3D HHps. Ek geen die fittings weer doen maar van 2.2-2.55 eV om die tail freatures te remove ne dan kyk wat gebeur.
+
+Het probeer om fittings te doen op die integrated intensity, to little avail. Ek moet probeer om dit piece wise te doen.
+

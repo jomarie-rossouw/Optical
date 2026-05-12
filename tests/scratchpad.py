@@ -31,7 +31,6 @@ model = sum(model_list)
 model_list_func = sympy.lambdify(list(model_list.free_symbols), model_list)
 model_func = sympy.lambdify(list(model.free_symbols), model)
 
-np.random.seed(1)
 param_values = lmfit.Parameters()
 param_values.add('A', value=1200)
 param_values.add('D', value=1200)

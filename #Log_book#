@@ -1,0 +1,8 @@
+11/05/2026
+
+EK gaan nie nou FWHM recalculate nie, vir die intensities, deel net current waardes met 500.
+Redo S2 plots in oranje, plot data is 'S2_area_2-3_eV.txt' en 'S2_integrated_intensity.txt'
+save onder figures as 'S2_integ_int_2_3_eV.png' en 'S2_integ_int_2-20_2-55_eV.png'
+
+Note: s*_centroids_fitted.txt se height is die half max en nie die max nie
+

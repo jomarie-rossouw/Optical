@@ -27,7 +27,7 @@ def save_fit(output_root, x, y, x_name, y_name, res, fitted_eq, param_values, ex
     initial_params = {
         k: float(v) if np.isscalar(v) else np.asarray(v).tolist()
         for k, v in param_values.items()
-        if k != x
+        #if k != x_sym
     }
     with open(output_dir / 'initial_parameters.json', 'w') as f:
         json.dump(initial_params, f, indent=2)
@@ -41,7 +41,6 @@ def save_fit(output_root, x, y, x_name, y_name, res, fitted_eq, param_values, ex
         'python_version': sys.version,
         'platform': platform.platform(),
         'numpy_version': np.__version__,
-        'matplotlib_version': plt.__version__,
     }
     if extra_metadata:
         repro_info.update(extra_metadata)
@@ -50,7 +49,7 @@ def save_fit(output_root, x, y, x_name, y_name, res, fitted_eq, param_values, ex
         json.dump(repro_info, f, indent=2)
 
     fig = plt.figure()
-    res.plot_fit(fig=fig)
+    res.plot_fit()
     fig.savefig(output_dir / 'fit_plot.png', dpi=300)
     plt.close(fig)
 

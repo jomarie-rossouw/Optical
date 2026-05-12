@@ -1,0 +1,73 @@
+[[Model]]
+    Model(_lambdifygenerated)
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 1108
+    # data points      = 22
+    # variables        = 11
+    chi-square         = 1893.49439
+    reduced chi-square = 172.135854
+    Akaike info crit   = 120.013010
+    Bayesian info crit = 132.014477
+    R-squared          = 0.99391935
+[[Variables]]
+    Io:      206.045172 +/- 10249.7324 (4974.51%) (init = 75)
+    A:       26.8711462 +/- 1945.74747 (7241.03%) (init = 50)
+    Eb:      0.06757271 +/- 0.76617163 (1133.85%) (init = 0.116)
+    kb:      8.617333e-05 (fixed)
+    sigma1:  211.142433 +/- 38.0367001 (18.01%) (init = 195)
+    T0:      243.356589 +/- 1.28879465 (0.53%) (init = 243)
+    sigma2:  15.5465274 +/- 2.14157639 (13.78%) (init = 15)
+    B:       629.602443 +/- 7900.23909 (1254.80%) (init = 241)
+    T_w:     139.504929 +/- 3968.86709 (2844.97%) (init = 389)
+    sigma3:  64.9898285 +/- 57.9707695 (89.20%) (init = 2.6)
+    T1:      96.2892003 +/- 7.79370778 (8.09%) (init = 98)
+    sigma4:  10.1529749 +/- 9.33914584 (91.98%) (init = 2.4)
+[[Correlations]] (unreported correlations are < 0.100)
+    C(A, T_w)         = +0.9999
+    C(Io, Eb)         = -0.9998
+    C(A, Eb)          = +0.9997
+    C(Io, A)          = -0.9995
+    C(Io, T_w)        = -0.9995
+    C(Eb, T_w)        = +0.9995
+    C(Io, B)          = -0.9979
+    C(Eb, B)          = +0.9970
+    C(A, B)           = +0.9955
+    C(B, T_w)         = +0.9952
+    C(sigma1, B)      = -0.9529
+    C(Io, sigma1)     = +0.9491
+    C(Eb, sigma1)     = -0.9471
+    C(sigma1, T_w)    = -0.9457
+    C(A, sigma1)      = -0.9452
+    C(sigma3, T1)     = -0.9126
+    C(sigma3, sigma4) = +0.8983
+    C(T1, sigma4)     = -0.8976
+    C(sigma2, B)      = -0.8448
+    C(Io, sigma2)     = +0.8388
+    C(Eb, sigma2)     = -0.8354
+    C(sigma2, T_w)    = -0.8343
+    C(A, sigma2)      = -0.8329
+    C(sigma1, sigma2) = +0.8098
+    C(T0, T_w)        = -0.6949
+    C(A, T0)          = -0.6913
+    C(Io, T0)         = +0.6897
+    C(Eb, T0)         = -0.6848
+    C(T0, B)          = -0.6782
+    C(sigma1, T0)     = +0.6607
+    C(T0, sigma2)     = +0.6008
+    C(sigma2, sigma3) = +0.2778
+    C(sigma1, sigma3) = +0.2761
+    C(B, sigma3)      = -0.2682
+    C(sigma2, T1)     = -0.2479
+    C(sigma1, T1)     = -0.2350
+    C(B, T1)          = +0.2189
+    C(Io, sigma3)     = +0.2078
+    C(Eb, sigma3)     = -0.1960
+    C(A, sigma3)      = -0.1797
+    C(T_w, sigma3)    = -0.1779
+    C(Io, T1)         = -0.1573
+    C(Eb, T1)         = +0.1483
+    C(A, T1)          = +0.1294
+    C(T_w, T1)        = +0.1263
+    C(sigma2, sigma4) = +0.1244
+    C(sigma1, sigma4) = +0.1038

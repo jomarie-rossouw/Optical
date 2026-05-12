@@ -1,0 +1,35 @@
+[[Model]]
+    Model(_lambdifygenerated)
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 1069
+    # data points      = 8
+    # variables        = 6
+    chi-square         = 2.0149e-08
+    reduced chi-square = 1.0075e-08
+    Akaike info crit   = -146.396255
+    Bayesian info crit = -145.919605
+    R-squared          = 0.99721681
+[[Variables]]
+    Eg2:     0.80695902 +/- 3369873.20 (417601529.92%) (init = 1.5)
+    wD:      81292.0913 +/- 1.8528e+08 (227922.24%) (init = 0.06)
+    ab:     -0.14485960 +/- 328.304499 (226636.35%) (init = 0.0008)
+    A:       1.56011409 +/- 2.18377233 (139.98%) (init = 30)
+    Eg1:     1.58172415 +/- 3369873.03 (213050615.32%) (init = 2.4)
+    theta1:  713.147618 +/- 1686.09591 (236.43%) (init = 300)
+[[Correlations]] (unreported correlations are < 0.100)
+    C(Eg2, Eg1)    = -1.0000
+    C(wD, ab)      = -1.0000
+    C(wD, theta1)  = +1.0000
+    C(ab, theta1)  = -1.0000
+    C(ab, A)       = -0.9515
+    C(wD, A)       = +0.9515
+    C(A, theta1)   = +0.9510
+    C(Eg2, A)      = -0.8475
+    C(A, Eg1)      = +0.8475
+    C(Eg2, theta1) = -0.7941
+    C(Eg1, theta1) = +0.7941
+    C(Eg2, ab)     = +0.7939
+    C(ab, Eg1)     = -0.7939
+    C(Eg2, wD)     = -0.7938
+    C(wD, Eg1)     = +0.7938
