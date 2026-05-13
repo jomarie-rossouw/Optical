@@ -1,0 +1,24 @@
+[[Model]]
+    Model(_lambdifygenerated)
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 20000
+    # data points      = 10
+    # variables        = 9
+    chi-square         = 2.2163e-08
+    reduced chi-square = 2.2163e-08
+    Akaike info crit   = -181.274460
+    Bayesian info crit = -178.551194
+    R-squared          = 0.92547251
+##  Warning: uncertainties could not be estimated:
+    Eg2:     at boundary
+[[Variables]]
+    Eg2:     3.99999994 (init = 2.355)
+    wD:     -57.4832713 (init = 0.005)
+    ab:      0.01844177 (init = 20)
+    Eg0:     2.99994539 (init = 2.355)
+    a:       778.917554 (init = 2)
+    theta:   2768.65257 (init = 10)
+    A:      -20.1534632 (init = -75)
+    Eg1:    -8.64801804 (init = 2.36)
+    theta1:  557.290908 (init = 100)

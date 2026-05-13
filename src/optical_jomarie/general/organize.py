@@ -8,14 +8,14 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-def save_fit(output_root, x, y, x_name, y_name, res, fitted_eq, param_values, extra_metadata=None):
+def save_fit(output_root, x, y, y_new, x_name, y_name, res, fitted_eq, model_list, param_values, extra_metadata=None):
     output_dir = Path(output_root) / datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     np.savetxt(output_dir / 'data.csv',
-               np.column_stack((x, y)),
+               np.column_stack((x, y, y_new)),
                delimiter=',',
-               header=f'{x_name}, {y_name}',
+               header=f'{x_name}, initial {y_name}, {y_name}',
                comments='')
 
     with open(output_dir / 'fit_report.txt', 'w') as f:
@@ -23,6 +23,7 @@ def save_fit(output_root, x, y, x_name, y_name, res, fitted_eq, param_values, ex
 
     with open(output_dir / 'fitted_equation.txt', 'w') as f:
         f.write(str(fitted_eq))
+        f.write(str(model_list))
 
     initial_params = {
         k: float(v) if np.isscalar(v) else np.asarray(v).tolist()

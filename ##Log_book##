@@ -19,3 +19,32 @@ Eb for S1 is around 330 meV, which is much larger than the 116 meV reported by a
 
 Het probeer om fittings te doen op die integrated intensity, to little avail. Ek moet probeer om dit piece wise te doen.
 
+12/05/2026
+
+To Do:
+- Probeer Fermi-Dirac deel fit met Varshni
+- Doen fitting van S1 waar jy die 293 K een remove
+
+Toets how om die naam van die equation te print in organize:
+toets op model1 van s1 met w_bose_einstein.py
+
+by organize.py add write(str(model_list)) - die output die symbolic equation en nie die eq name nie
+verander ook die input y na y_new toe -> add y en y_new as input sodat dit x print saam met die ou en nuwe y waardes
+
+met die nuwe run van s1 using this:
+bose_einstein = sympy_parser.parse_expr('Eg0-2*a/(exp(theta/T)-1)')
+fermi_dirac = sympy_parser.parse_expr('Eg1 + A/(exp(theta1/T)+1)')
+varshni = sympy_parser.parse_expr('Eg2 + (ab*T**2)/(T + wD)')
+#gauss_1 = sympy_parser.parse_expr('sigma1*exp(-(T-T0)**2/(2*sigma2**2))')
+#expo_1 = sympy_parser.parse_expr('B*exp(-T/T_w + 1)')
+model_list1 = sympy.Array((fermi_dirac, varshni))
+model_list2 = sympy.Array((varshni, fermi_dirac))
+model_list3 = sympy.Array((bose_einstein, varshni))
+
+kry ek beter r-squared vir model1 en model3, en slightly slegter vir model2, so gaan probeer sun met die nuwe model1 en 3 en ou model2
+
+13/05/2026
+
+fit fwhm piecewise, doen frohlich met BE van 0:12 -idk of dit werk nie, maar die lit se dat n beter description benodig word vir die broadening as Frohlich. Ek los maar dit met selgs die Frohlich
+Redo die plot van S1 se integrated intensity om dit in die regte kleur te kry en copy die figures van die fittings oor na Thesis_Writeup/Results_Chapter/Optical_Plots/verwerk_fitted
+Import die fitted plots na die results chapter en add die equations

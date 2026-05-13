@@ -1,0 +1,59 @@
+[[Model]]
+    Model(_lambdifygenerated)
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 1599
+    # data points      = 10
+    # variables        = 9
+    chi-square         = 9.7905e-08
+    reduced chi-square = 9.7905e-08
+    Akaike info crit   = -166.418500
+    Bayesian info crit = -163.695234
+    R-squared          = 0.67076753
+[[Variables]]
+    Eg2:     3.99999988 +/- 2.3183e+13 (579581814775730.62%) (init = 2.355)
+    wD:      6883.67217 +/- 2.1023e+08 (3054031.53%) (init = 0.006)
+    ab:     -2.1414e-04 +/- 6.30446391 (2944090.36%) (init = 35)
+    Eg0:     2.99996046 +/- 2.6516e+12 (88388252535101.23%) (init = 2.355)
+    a:      -16290.7124 +/- 1.0525e+08 (646057.33%) (init = 2)
+    theta:   3903.12913 +/- 1180954.79 (30256.62%) (init = 10)
+    A:      -2164949.08 +/- 5.0677e+09 (234079.32%) (init = -75)
+    Eg1:    -4.64258487 +/- 6.9094e+12 (148825530934245.38%) (init = 2.36)
+    theta1:  5010.70876 +/- 1149408.51 (22939.04%) (init = 100)
+[[Correlations]] (unreported correlations are < 0.100)
+    C(wD, ab)        = -1.0000
+    C(a, theta)      = -0.9999
+    C(A, theta1)     = -0.9996
+    C(a, theta1)     = +0.9983
+    C(theta, theta1) = -0.9975
+    C(a, A)          = -0.9962
+    C(theta, A)      = +0.9950
+    C(ab, theta)     = +0.9796
+    C(wD, theta)     = -0.9795
+    C(ab, a)         = -0.9771
+    C(wD, a)         = +0.9770
+    C(wD, Eg0)       = -0.9745
+    C(ab, Eg0)       = +0.9745
+    C(Eg2, Eg1)      = -0.9650
+    C(ab, theta1)    = -0.9633
+    C(wD, theta1)    = +0.9632
+    C(ab, A)         = +0.9551
+    C(wD, A)         = -0.9550
+    C(Eg0, theta)    = +0.9459
+    C(Eg0, a)        = -0.9431
+    C(Eg0, theta1)   = -0.9282
+    C(Eg0, A)        = +0.9197
+    C(Eg2, wD)       = +0.9127
+    C(Eg2, ab)       = -0.9125
+    C(Eg2, Eg0)      = -0.8888
+    C(Eg2, theta)    = -0.8218
+    C(Eg2, a)        = +0.8153
+    C(wD, Eg1)       = -0.7874
+    C(ab, Eg1)       = +0.7871
+    C(Eg2, theta1)   = +0.7833
+    C(Eg2, A)        = -0.7662
+    C(Eg0, Eg1)      = +0.7376
+    C(theta, Eg1)    = +0.6698
+    C(a, Eg1)        = -0.6619
+    C(Eg1, theta1)   = -0.6233
+    C(A, Eg1)        = +0.6029

@@ -59,21 +59,21 @@ print(fitted_eq)
 f = interpolate.interp1d(T, res.best_fit)
 best = f(temp)
 #res.plot_fit()
-plt.scatter(T, I, color = '#ff7f0e', label='Data')
+plt.scatter(T, I, color = '#1f77b4', label='Data')
 #for c in yi_fitted:
 #    plt.plot(T, c, color='0.7')
 plt.plot(temp, best, label='Fit')
 plt.xlabel('Temperature (K)')
 plt.ylabel('Integrated Intensity (a.u.) ')
 plt.legend()
-plt.savefig('figures/s1_integ_int_fit.png')
+plt.savefig('figures/S1_integ_int_fit_v1.png')
 plt.show()
 
 save_or_nah = input('Do you want to save?').lower()
 
-if save_or_nah in ('y', 'yes', 'slay'):
-    out_dir = input('Where should it save to?')
-    org.save_fit(f'fit_results/{out_dir}', x=T, y=I, x_name = 'Temperature (K)', y_name = 'Integrated Intensity', res = res, fitted_eq = fitted_eq, param_values=param_values)
-elif save_or_nah in ('n', 'no', 'nah'):
-    print('Okey-dokey')
+# if save_or_nah in ('y', 'yes', 'slay'):
+out_dir = 'arr_s1'
+org.save_fit(f'fit_results/{out_dir}/integ_int_v1', x=T, y=I, y_new=res.best_fit, x_name = 'Temperature (K)', y_name = 'Integrated Intensity', res = res, fitted_eq = fitted_eq, model_list= model_list, param_values=param_values)
+# elif save_or_nah in ('n', 'no', 'nah'):
+#     # print('Okey-dokey')
 

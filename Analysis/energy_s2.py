@@ -18,21 +18,21 @@ data = np.loadtxt('data/S2_centroids_Fitted.txt', delimiter = ',', skiprows=1)
 T = data[:,0]
 eV = data[:,1]
 
-T1 = T[0:12]
-eV1 = eV[0:12]
+T1 = T[0:9]
+eV1 = eV[0:9]
 
-T2 = T[10:17]
-eV2 = eV[10:17]
+T2 = T[8:18]
+eV2 = eV[8:18]
 
-T3 = T[16:23]
-eV3 = eV[16:23]
+T3 = T[17:23]
+eV3 = eV[17:23]
 bose_einstein = sympy_parser.parse_expr('Eg0-2*a/(exp(theta/T)-1)')
 fermi_dirac = sympy_parser.parse_expr('Eg1 + A/(exp(theta1/T)+1)')
 varshni = sympy_parser.parse_expr('Eg2 + (ab*T**2)/(T + wD)')
 #gauss_1 = sympy_parser.parse_expr('sigma1*exp(-(T-T0)**2/(2*sigma2**2))')
 #expo_1 = sympy_parser.parse_expr('B*exp(-T/T_w + 1)')
 model_list1 = sympy.Array((fermi_dirac, varshni))
-model_list2 = sympy.Array((varshni, bose_einstein))
+model_list2 = sympy.Array((varshni, fermi_dirac, bose_einstein))
 model_list3 = sympy.Array((bose_einstein, varshni))
 model1 = sum(model_list1)
 model2 = sum(model_list2)
@@ -42,39 +42,39 @@ model_list_func1 = sympy.lambdify(list(model_list1.free_symbols), model_list1)
 model_func1 = sympy.lambdify(list(model1.free_symbols), model1)
 
 param_values1 = lmfit.Parameters()
-param_values1.add('A', value = 30)
-param_values1.add('Eg1', value = 2.4, min=1, max=3)
-param_values1.add('theta1', value = 300)
-param_values1.add('Eg2', value = 2, min=1, max=3)
-param_values1.add('wD', value=0.06)
-param_values1.add('ab', value=0.0008)
+param_values1.add('A', value = -300)
+param_values1.add('Eg1', value = 2.3566, min=1, max=3)
+param_values1.add('theta1', value = 150)
+param_values1.add('Eg2', value = 2.35, min=1, max=3)
+param_values1.add('wD', value=0.0004)
+param_values1.add('ab', value=0.08)
 #param_values1.add('kb', value = 1, vary = False)
 
 model_list_func2 = sympy.lambdify(list(model_list2.free_symbols), model_list2)
 model_func2 = sympy.lambdify(list(model2.free_symbols), model2)
 
 param_values2 = lmfit.Parameters()
-param_values2.add('Eg2', value = 2.3, min=1, max = 4)
-param_values2.add('wD', value=0.06)
-param_values2.add('ab', value=0.0008)
-param_values2.add('Eg0', value = 2.36, min=1)
-param_values2.add('a', value = 20)
-param_values2.add('theta', value = 1000)
-# param_values2.add('A', value = 30)
-# param_values2.add('Eg1', value = 2.4)
-# param_values2.add('theta1', value = 300)
+param_values2.add('Eg2', value = 2.355, min=1, max = 4)
+param_values2.add('wD', value=5e-4) #0.005 is goed, 0.0045 is te curved
+param_values2.add('ab', value=20) #20 is top klas
+param_values2.add('Eg0', value = 2.355, min=1, max=3) # bepaal die y-posissie en rotation 2.55 is goed
+param_values2.add('a', value = 2) #bepaal die degree van die polynomial en sy curvature, 2 is n goeie waarde
+param_values2.add('theta', value = 10) #speel n rol in die curvature op 10 is dit n s kurwe op een is dit slightly curved facing up, 10 is goed
+param_values2.add('A', value = -75) #speel n rol in curvature soortgelyk aan theta 30-50 is goed, 40 suck, -75 is goed
+param_values2.add('Eg1', value = 2.36) #2.36 en 2.355 is goed
+param_values2.add('theta1', value = 100) #100 en -100 is die beste
 #param_values2.add('kb', value = kb, vary = False)
 
 model_list_func3 = sympy.lambdify(list(model_list3.free_symbols), model_list3)
 model_func3 = sympy.lambdify(list(model3.free_symbols), model3)
 
 param_values3 = lmfit.Parameters()
-param_values3.add('Eg0', value = 2.5)
-param_values3.add('a', value = 20)
-param_values3.add('theta', value = 1000)
-param_values3.add('Eg2', value = 2.1)
-param_values3.add('wD', value=500)
-param_values3.add('ab', value=0.008)
+param_values3.add('Eg0', value = 2.356, min = 1, max = 3)
+param_values3.add('a', value = 20) #20 is goed, alles anders is dit of bo of onder die data punte
+param_values3.add('theta', value = -0.3) #dit skuif die posisie van die curve met veranderinge in die orde van e+1 en e-1 verander die curvature ook andersins
+param_values3.add('Eg2', value = 2.35, min = 1, max = 3)
+param_values3.add('wD', value=10) #by 900 is dit reguit, 100 is aight
+param_values3.add('ab', value=20) # in die orde van 0 is goed
 
 #param_values3.add('kb', value = kb, vary = False)
 
@@ -141,16 +141,16 @@ plt.plot(T2, res2.best_fit, label = 'Model 2')
 plt.plot(T3, res3.best_fit, label = 'Model 3')
 plt.xlabel('Temperature (K)')
 plt.ylabel('Peak Energy (eV)')
-# plt.savefig('fit_results/energy_s2/fermi1_varshni2_reg.png')
+plt.savefig('fit_results/energy_s2/total_v2.png')
 plt.show()
 
 # save_or_nah = input('Do you want to save?').lower()
 
 # if save_or_nah in ('y', 'yes', 'slay'):
 # out_dir = input('Where should it save to?')
-# org.save_fit(f'fit_results/energy_s2/model1', x=T1, y=eV1, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res1, fitted_eq = fitted_eq1, param_values=param_values1)
-# org.save_fit(f'fit_results/energy_s2/model2', x=T2, y=eV2, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res2, fitted_eq = fitted_eq2, param_values=param_values2)
-# org.save_fit(f'fit_results/energy_s2/model3', x=T3, y=eV3, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res3, fitted_eq = fitted_eq3, param_values=param_values3)
+org.save_fit(f'fit_results/energy_s2/model1_v2', x=T1, y=eV1, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res1, fitted_eq = fitted_eq1, param_values=param_values1)
+org.save_fit(f'fit_results/energy_s2/model2_v3', x=T2, y=eV2, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res2, fitted_eq = fitted_eq2, param_values=param_values2)
+org.save_fit(f'fit_results/energy_s2/model3_v2', x=T3, y=eV3, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res3, fitted_eq = fitted_eq3, param_values=param_values3)
     
 # elif save_or_nah in ('n', 'no', 'nah'):
 #     print('Okey-dokey')
