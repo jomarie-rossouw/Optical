@@ -20,7 +20,7 @@ def plot_scatter(data, xlabel, ylabel, title):
     plt.title(title)
     plt.show()
 
-def plot_overlay(sample1, sample2, unit = 'ev', fov = 'close', ylimit = None):
+def plot_overlay_spec(sample1, sample2, xlbl='Energy (eV)', ylbl='Intensity (a.u.)', unit = 'ev', fov = 'close', ylimit = None):
     valid_energy = {'energy', 'Energy', 'ev', 'eV', 'E'}
     valid_lambda = {'wavelength', 'lambda', 'nm'}
 
@@ -45,8 +45,8 @@ def plot_overlay(sample1, sample2, unit = 'ev', fov = 'close', ylimit = None):
         if unit in valid_energy:
             plt.plot(ev, S1, color = '#1f77b4', label = 'S1')
             plt.plot(ev, S2, color = '#ff7f0e', label = 'S2')
-            plt.xlabel('Energy (eV)')
-            plt.ylabel('Intensity (a.u.)')
+            plt.xlabel(xlbl)
+            plt.ylabel(ylbl)
             plt.xlim(x_ev)
             plt.ylim(ylimit)
             plt.legend()
@@ -54,8 +54,8 @@ def plot_overlay(sample1, sample2, unit = 'ev', fov = 'close', ylimit = None):
         if unit in valid_lambda:
             plt.plot(nm, S1, color = '#1f77b4', label = 'S1')
             plt.plot(nm, S2, color = '#ff7f0e', label = 'S2')
-            plt.xlabel('Wavelength (nm)')
-            plt.ylabel('Intensity (a.u.)')
+            plt.xlabel(xlbl)
+            plt.ylabel(ylbl)
             plt.xlim(x_nm)
             plt.ylim(ylimit)
             plt.legend()
@@ -64,7 +64,7 @@ def plot_overlay(sample1, sample2, unit = 'ev', fov = 'close', ylimit = None):
         raise ValueError('Invalid')
 
 
-def plot_single(data, sample = 'S1', unit = 'ev', fov = 'close', ylimit = None):
+def plot_single_spec(data, sample = 'S1', unit = 'ev', fov = 'close', ylimit = None):
     valid_energy = {'energy', 'Energy', 'ev', 'eV', 'E'}
     valid_lambda = {'wavelength', 'lambda', 'nm'}
 

@@ -28,7 +28,7 @@ T3 = T[17:23]
 eV3 = eV[17:23]
 bose_einstein = sympy_parser.parse_expr('Eg0-2*a/(exp(theta/T)-1)')
 fermi_dirac = sympy_parser.parse_expr('Eg1 + A/(exp(theta1/T)+1)')
-varshni = sympy_parser.parse_expr('Eg2 + (ab*T**2)/(T + wD)')
+varshni = sympy_parser.parse_expr('Eg2 + (ab*T**2)/(T + wD)') #wD = hbar*omega_D/k_B (so die debye energy gedeel deur boltzmann - ons soek slegs die debye E so maaal dus die result met 8.617e-5)
 #gauss_1 = sympy_parser.parse_expr('sigma1*exp(-(T-T0)**2/(2*sigma2**2))')
 #expo_1 = sympy_parser.parse_expr('B*exp(-T/T_w + 1)')
 model_list1 = sympy.Array((fermi_dirac, varshni))
@@ -138,16 +138,16 @@ plt.plot(T2, res2.best_fit, label = 'Model 2')
 plt.plot(T3, res3.best_fit, label = 'Model 3')
 plt.xlabel('Temperature (K)')
 plt.ylabel('Peak Energy (eV)')
-plt.savefig('figures/S1_energy_fit_v2.png')
+# plt.savefig('figures/S1_energy_fit_v2.png')
 plt.show()
 
 # save_or_nah = input('Do you want to save?').lower()
 
 # if save_or_nah in ('y', 'yes', 'slay'):
-out_dir = 'energy_s1'
-org.save_fit(f'fit_results/{out_dir}/model1_v2', x=T1, y=eV1, y_new=res1.best_fit, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res1, fitted_eq = fitted_eq1, model_list = model_list1, param_values=param_values1)
-org.save_fit(f'fit_results/{out_dir}/model2_v2', x=T2, y=eV2, y_new=res2.best_fit, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res2, fitted_eq = fitted_eq2, model_list = model_list2, param_values=param_values2)
-org.save_fit(f'fit_results/{out_dir}/model3_v2', x=T3, y=eV3, y_new=res3.best_fit, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res3, fitted_eq = fitted_eq3, model_list = model_list3, param_values=param_values3)
+# out_dir = 'energy_s1'
+# org.save_fit(f'fit_results/{out_dir}/model1_v2', x=T1, y=eV1, y_new=res1.best_fit, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res1, fitted_eq = fitted_eq1, model_list = model_list1, param_values=param_values1)
+# org.save_fit(f'fit_results/{out_dir}/model2_v2', x=T2, y=eV2, y_new=res2.best_fit, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res2, fitted_eq = fitted_eq2, model_list = model_list2, param_values=param_values2)
+# org.save_fit(f'fit_results/{out_dir}/model3_v2', x=T3, y=eV3, y_new=res3.best_fit, x_name = 'Temperature (K)', y_name = 'Peak Energy (eV)', res = res3, fitted_eq = fitted_eq3, model_list = model_list3, param_values=param_values3)
     
 # elif save_or_nah in ('n', 'no', 'nah'):
     # print('Okey-dokey')

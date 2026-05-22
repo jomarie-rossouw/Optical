@@ -47,7 +47,7 @@ def elliott(eV, a, b, n, alpha, Eg, Ry):
 
 if __name__ == '__main__':
     eV = np.linspace(1.5, 3.5, 1000)
-    alpha, a, b, Eg, Ry, n = 2.75, 0.058, 1.79, 2.51, 0.089, 1
+    alpha, a, b, Eg, Ry, n = 2.9, 0.058, 1.79, 2.61, 0.079, 2
     absorp = elliott(eV, a, b, n, alpha, Eg, Ry)
     #cont = cont_spectra(alpha, gamma(Ry, eV))*heavi_broadening(eV, Eg, b)
     #print(Eb, E_n)

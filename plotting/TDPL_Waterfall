@@ -1,0 +1,34 @@
+import numpy as np
+import pandas as pd
+from scipy.signal import find_peaks
+import re
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from matplotlib import colormaps
+from matplotlib import cm 
+from matplotlib.colors import ListedColormap,LinearSegmentedColormap
+from natsort import natsorted
+
+data = np.loadtxt('data/S1_norm.csv', delimiter=',')
+temp = data[0,1:]
+eV = data[1:,0]
+I = data[1:,1:23]
+colors = plt.cm.Oranges(np.linspace(1,0.3,23))
+
+fig = plt.figure()
+ax = fig.add_subplot( projection='3d')
+yticks = temp
+
+
+
+peaks = []
+for i in range(22):
+    ax.plot(eV, I[:,i], color = colors[i], zs=temp[i], zdir='y')
+
+ax.yaxis.set_inverted(True)
+ax.set_xlabel('Energy (eV)')
+ax.set_ylabel('Temperature (K)')
+ax.set_zlabel('Intensity (a.u.)')
+plt.savefig('figures/PL_u_TDPL_waterfall_s2.png')
+plt.show()
+    

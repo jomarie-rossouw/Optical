@@ -16,7 +16,7 @@ def section(data, ref_col, use_col, lb, ub):
     idx = np.where((nm > lb) & (nm < ub))
     return(data[idx,use_col].transpose())
 #S1 se data
-data = np.loadtxt('/home/jo-marie/Documents/Experimental_11032026/UV-Vis/Glass1_UV-Vis.csv', delimiter = ',')
+data = np.loadtxt('data/S1_integrated_intensity.txt', delimiter = ',')
 eV = 1240/section(data, 0, 0, 400, 689) #energy
 transmish = section(data,0,2,400,689) #smoothed intensity
 #eV = 1240/data[:,0]
