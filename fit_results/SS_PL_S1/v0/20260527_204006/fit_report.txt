@@ -1,0 +1,56 @@
+[[Model]]
+    Model(_lambdifygenerated)
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 377
+    # data points      = 778
+    # variables        = 12
+    chi-square         = 0.81440994
+    reduced chi-square = 0.00106320
+    Akaike info crit   = -5314.64997
+    Bayesian info crit = -5258.76925
+    R-squared          = 0.99560268
+[[Variables]]
+    psi:     3.141593 (fixed)
+    g1:      0.08934697 +/- 0.00371926 (4.16%) (init = 0.1)
+    Eg_g1:   2.34849444 +/- 8.7917e-04 (0.04%) (init = 2.6)
+    sigma1:  0.04163440 +/- 8.4477e-04 (2.03%) (init = 0.055)
+    g2:      0.12209320 +/- 0.00374866 (3.07%) (init = 0.1)
+    Eg_g2:   2.36110523 +/- 1.5595e-04 (0.01%) (init = 2.6)
+    sigma2:  0.02004273 +/- 2.4702e-04 (1.23%) (init = 0.055)
+    l1:      0.00883460 +/- 27913475.8 (315956447237.79%) (init = 0.1)
+    Eg_l1:   2.63726626 +/- 48983.5718 (1857361.64%) (init = 2.6)
+    Gamma1:  0.10000000 +/- 34.9911716 (34991.17%) (init = 0.055)
+    l2:      0.00516297 +/- 27913012.3 (540638788320.36%) (init = 0.1)
+    Eg_l2:   2.63729595 +/- 76702.0076 (2908358.00%) (init = 2.6)
+    Gamma2:  0.09999999 +/- 108.495372 (108495.38%) (init = 0.055)
+[[Correlations]] (unreported correlations are < 0.100)
+    C(l1, l2)         = -1.0000
+    C(l1, Eg_l1)      = +1.0000
+    C(Eg_l1, l2)      = -1.0000
+    C(l2, Eg_l2)      = -1.0000
+    C(l1, Eg_l2)      = +1.0000
+    C(Eg_l1, Eg_l2)   = +1.0000
+    C(g1, g2)         = -0.9770
+    C(g2, sigma2)     = +0.9304
+    C(g1, sigma2)     = -0.9193
+    C(Gamma1, Gamma2) = -0.8955
+    C(Eg_l2, Gamma2)  = -0.8730
+    C(l2, Gamma2)     = +0.8730
+    C(l1, Gamma2)     = -0.8730
+    C(Eg_l1, Gamma2)  = -0.8730
+    C(g1, Eg_g1)      = +0.7940
+    C(sigma1, g2)     = +0.7906
+    C(Eg_g1, g2)      = -0.7893
+    C(Eg_g1, sigma2)  = -0.7186
+    C(g1, sigma1)     = -0.6939
+    C(sigma1, sigma2) = +0.6423
+    C(sigma1, Eg_g2)  = -0.5845
+    C(Gamma1, Eg_l2)  = +0.5647
+    C(Gamma1, l2)     = -0.5647
+    C(l1, Gamma1)     = +0.5647
+    C(Eg_l1, Gamma1)  = +0.5647
+    C(Eg_g1, sigma1)  = -0.5019
+    C(g2, Eg_g2)      = -0.3652
+    C(g1, Eg_g2)      = +0.3159
+    C(Eg_g2, sigma2)  = -0.2971

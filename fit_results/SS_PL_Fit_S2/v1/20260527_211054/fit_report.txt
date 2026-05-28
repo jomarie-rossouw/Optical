@@ -1,0 +1,39 @@
+[[Model]]
+    Model(_lambdifygenerated)
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 174
+    # data points      = 778
+    # variables        = 9
+    chi-square         = 0.81442588
+    reduced chi-square = 0.00105907
+    Akaike info crit   = -5320.63474
+    Bayesian info crit = -5278.72420
+    R-squared          = 0.99560260
+[[Variables]]
+    psi:     3.141593 (fixed)
+    g1:      0.08935354 +/- 0.00370233 (4.14%) (init = 0.09)
+    Eg_g1:   2.34849551 +/- 8.7428e-04 (0.04%) (init = 2.35)
+    sigma1:  0.04163320 +/- 8.3580e-04 (2.01%) (init = 0.03)
+    g2:      0.12208716 +/- 0.00373769 (3.06%) (init = 0.122)
+    Eg_g2:   2.36110539 +/- 1.5497e-04 (0.01%) (init = 2.361)
+    sigma2:  0.02004238 +/- 2.4649e-04 (1.23%) (init = 0.02)
+    l1:      0.01399008 +/- 0.00137923 (9.86%) (init = 0.01)
+    Eg_l1:   2.63727639 +/- 0.00491079 (0.19%) (init = 2.637)
+    Gamma1:  0.09968197 +/- 0.00834111 (8.37%) (init = 0.1)
+[[Correlations]] (unreported correlations are < 0.100)
+    C(g1, g2)         = -0.9790
+    C(g2, sigma2)     = +0.9306
+    C(g1, sigma2)     = -0.9206
+    C(sigma1, g2)     = +0.7975
+    C(g1, Eg_g1)      = +0.7929
+    C(Eg_g1, g2)      = -0.7915
+    C(Eg_g1, sigma2)  = -0.7198
+    C(g1, sigma1)     = -0.7095
+    C(l1, Gamma1)     = -0.7065
+    C(sigma1, sigma2) = +0.6490
+    C(sigma1, Eg_g2)  = -0.5799
+    C(Eg_g1, sigma1)  = -0.5176
+    C(g2, Eg_g2)      = -0.3664
+    C(g1, Eg_g2)      = +0.3234
+    C(Eg_g2, sigma2)  = -0.2990

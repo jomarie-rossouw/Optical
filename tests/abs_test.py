@@ -65,6 +65,7 @@ def alphac(eV, Eg, sigmac):
     for (eV > Eg):
         alphac0 = alphac0 + (((2*np.pi*eV)/(1-np.exp(-2*np.pi*eV)))*np.sqrt(eV-Eg))
     
+    
 s1, s2, tot1 = alpha1s(eV, 0.229, 2.63, 4.47, 18, 61)
 tot = alphams(eV, 0.229, 2.63, 18)
 

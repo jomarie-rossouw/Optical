@@ -34,13 +34,15 @@ best_vals = {sym: res.params[str(sym)].value
              if str(sym) != 'T'}
 fitted_eq = sympy.simplify(model.subs(best_vals))
 
+
+
 print("Fitted equation:")
 print(fitted_eq)
-
+print(yi)
 res.plot_fit()
 #plt.plot(T, I, label='true')
-#for c in yi:
-#    plt.plot(T, c, color='0')
+for c, label in yi:
+   plt.plot(T, c, color='0', label=label)
 
 plt.legend()
 plt.show()

@@ -92,7 +92,7 @@ if __name__ == '__main__':
     
     A1, A2, Ry, n, Eg, disc, cont, B = 271e3, 8.1e3, 0.316, 1, 1.27, 0.02, 0.214, 365 #EBF_3D
     A, Eg_L, Em_L, gamma_n = 38, 2.426, 326, 0.05
-    alpha =  (1)*alphaL_3D(A1, eV, Ry, n, Eg, Em_L, gamma_n, cont) + alphaG_3D(A1, eV, Ry, n, Eg, disc, cont) #+ (1)*EBF_3D(A1, A2, eV, Ry, n, Eg, disc, cont) 
+    alpha =  (1)*alphaL_3D(A1, eV, Ry, n, Eg, Em_L, gamma_n, cont) + alphaG_3D(A1, eV, Ry, n, Eg, disc, cont) + (1)*EBF_3D(A1, A2, eV, Ry, n, Eg, disc, cont) 
     ebf = EBF_2D_TL(A1, A2, eV, Ry, n, Eg, B, Em_L, disc, cont)  
     TL = alphaL_2D(A, gamma_n, eV, Eg_L, Em_L)+ebf
     #cont = cont_spectra(alpha, gamma(Ry, eV))*heavi_broadening(eV, Eg, b)
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     #plt.plot(eV, Exo, '--k')
     # plt.xlim(2.15,2.45)
     print(alpha)
-    plt.plot( eV, TL)
+    plt.plot( eV, alpha)
     plt.show()
      
 

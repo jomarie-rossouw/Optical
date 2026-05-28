@@ -49,6 +49,7 @@ if __name__ == '__main__':
     eV = np.linspace(1.5, 3.5, 1000)
     alpha, a, b, Eg, Ry, n = 2.9, 0.058, 1.79, 2.61, 0.079, 2
     absorp = elliott(eV, a, b, n, alpha, Eg, Ry)
+    dirac = dirac_broadening(Ry, Eg, eV, n, a, alpha)
     #cont = cont_spectra(alpha, gamma(Ry, eV))*heavi_broadening(eV, Eg, b)
     #print(Eb, E_n)
     #plt.plot(eV, Exo, '--k')

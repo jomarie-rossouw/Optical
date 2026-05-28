@@ -1,49 +1,49 @@
-import scipy
-from datetime import datetime
-from pathlib import Path
-#from optical_jomarie.absorption import elliott as ell
 import matplotlib.pyplot as plt
 import numpy as np
 import sympy
 import scipy.constants as c
 from sympy.parsing import sympy_parser
+from optical_jomarie.general import organize as org
+from optical_jomarie.general import ez_plots as ez
 import lmfit
-import optical_jomarie.general as gen
+from lmfit.models import GaussianModel, LorentzianModel, DoniachModel
+from scipy import interpolate
 
-kb = c.k/c.e
-data = np.loadtxt('/home/jo-marie/Documents/Experimental_11032026/UV-Vis/Glass1_UV-Vis.csv', delimiter = ',')
+data = np.loadtxt('data/S1_norm.csv', delimiter=',')
+temp = data[0,1:]
+eV = data[1:,0]
+PL = data[1:,1:24] 
+i = 22
+T = temp[i]
+print(T)
+eV = ez.section(data, 0, 0, 1.6, 3.2)
+PL = ez.section(data, 0, i, lb=1.6, ub=3.2) #2de col
+pi = np.pi
+print(np.max(PL))
+print(eV[np.where(PL == np.max(PL))])
 
-nm = gen.ez_plots.section(data, 0, 0, 400, 650)
-eV = 1240/nm
-transmish = gen.ez_plots.section(data, 0, 1, 400, 650)
-absorbs = -np.log10(transmish)
-Eg = 2.6
-Eb = 0.2
-sigma1 = 18
-sigma2 = 31
-sigmac = 100
-Df = 4
-A = 14.47
+g1 = 0.17
+sigma1 = 0.01
+Eg_g1 = 2.362 #2.348, 2.35
 
-thresh = Eg-Eb
-mask = eV > Eg
-eV_mask = eV[mask]
+l1 = 0.23
+Gamma1 = 0.052
+Eg_l1 = 2.36
 
-sigma = np.where(eV <= thresh, sigma1, sigma2)
+g2 = 0.122
+l2 = 0.01
+Eg_g2 = 2.361
+Eg_l2 = 2.637
+sigma2 = 0.02
+Gamma2 = 0.099
 
-coeff = (Df*4*np.pi*Eb**(3/2))
-alpha1s = ((1/np.sqrt(2*np.pi*sigma**2))*np.exp(-0.5*(((eV-(Eg-Eb))/(sigma**2))**2)))
-alphams = sum(((4*np.pi*(Eb**(3/2)))/(m**3))*(1/np.sqrt(2*np.pi*sigma1**2))*(np.exp(-0.5*(((eV-((Eg-Eb)/(m**2)))/(sigma1**2)))**2)) for m in range(2,12))
+G1 = g1/((sigma1*np.sqrt(2*(np.pi))))*np.exp(-((eV-Eg_g1)**2)/(2*sigma1**2))
+L1 = (l1/np.pi)*((0.5*Gamma1)/((eV-Eg_l1)**2+(0.5*Gamma1)**2))
 
-alpha_ex = coeff*alpha1s + alphams
-
-SommerF = ((2/np.sqrt(2*np.pi*sigmac**2)))*(np.exp(-0.5*(eV/(sigmac**2))**2))
-alphac0 = np.where(eV>Eg, ((2*np.pi*eV_mask)/(1-np.exp(-2*np.pi*eV_mask)))*np.sqrt(eV_mask-Eg),0)
-
-alphac = np.where(eV > Eg, SommerF*alphac0, 0)
-
-alpha = A*(alphac)
- 
-plt.plot(eV, alpha, label='alpha')
+plt.plot(eV, PL, label='Data')
+# plt.plot(eV, G1, label='G')
+plt.plot(eV, L1, label='L')
+plt.title(f'{T} K')
+plt.xlim(1.6,3.2)
 plt.legend()
 plt.show()

@@ -20,7 +20,6 @@ ax = fig.add_subplot( projection='3d')
 yticks = temp
 
 
-
 peaks = []
 for i in range(22):
     ax.plot(eV, I[:,i], color = colors[i], zs=temp[i], zdir='y')

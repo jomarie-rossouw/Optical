@@ -1,0 +1,32 @@
+Normalised TDPL data: S*_norm.csv
+
+T | E | H
+298 | 2.35988201 | 2.8008
+
+
+26/05/2026
+
+tests:
+quicktest - lmfit tut, non-runner
+abs_test.py - Kober-Czerny, incomplete non-runner, in user defined functions
+arrhenius_test.py - Integrated intensity met n arr, gausian, en exp, fit werk nie
+scratchpad.py - Kober-Czerny, los staande functions, meeste van die code werk maar die plots doen nie, die peak wys nie
+
+working:
+w_energy_s1.py - fit werk maar is nie physical nie, code run (save option is uit gecomment)
+w_bose_einstein.py - selfde as w_energy_s1.py
+w_EBF_fit.py - BreitWignerModel van lmfit, half pad, maar los dit want dai model maak nie sin vir absorbance nie
+w_elliott_fit.py - plot absorbance van S1 teenoor elliott, maar daar is n error
+w_kober_abs.py - kober-Czerny selfde as scratchpad
+w_PL_spectra.py - import en section die data, begin met die Rashba energy equation maar niks anders nie (los maar daar is nie rashba splitting in myne nie)
+w_plotting_worked_data.py - plot van S1 se energy as n funksie van temp
+
+src:
+.../absorption/elliott:
+EBF.py - plot van Lazarraga se 3D en 2D functions, hulle werk nie, maar ek mag hulle dalk verkeerd gecode het
+elliott.py - Funksies vir al die params van elliott saam met die final equation, dit werk
+
+27/05/2026
+
+tests:
+scratchpad.py - die aanvanklikke PL fits se code
